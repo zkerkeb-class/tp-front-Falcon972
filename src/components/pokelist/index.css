@@ -1,11 +1,87 @@
-.poke-list-container{
-    display: flex;
-    flex-direction: column;
-
+.poke-list-container {
+    padding: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
-.poke-list{
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+.retro-title {
+    color: #fcd144;
+    text-shadow: 2px 2px 0px #3c5aa6;
+    font-family: 'Impact', sans-serif;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.retro-btn {
+    background-color: #3c5aa6;
+    color: #fcd144;
+    border: 3px solid #2a407a;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: 0.2s;
+}
+
+.retro-btn:hover:not(:disabled) {
+    background-color: #2a407a;
+    transform: scale(1.05);
+}
+.retro-btn:disabled {
+    background-color: #555;
+    border-color: #444;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.poke-list {
     display: flex;
     flex-wrap: wrap;
-    gap:8px;
+    justify-content: center;
+    gap: 30px;
+    padding: 0;
+    list-style: none;
+}
+
+.pagination-bottom {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.page-number {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.page-number.active {
+    background: #fcd144;
+    color: black;
+    border-color: #d4af37;
+    font-weight: bold;
+    transform: scale(1.2);
+}
+
+.page-number:hover:not(.active) {
+    background: #555;
 }

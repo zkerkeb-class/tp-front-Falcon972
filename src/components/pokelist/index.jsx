@@ -1,38 +1,82 @@
 import { useState, useEffect } from "react";
 import PokeCard from "../pokeCard";
-
 import './index.css';
+import { Link } from "react-router";
 
 const PokeList = () => {
     const [pokemons, setPokemons] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1); 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("https://pokeapi.co/api/v2/pokemon?limit=30")
+        setLoading(true);
+        fetch(`http://localhost:3000/pokemons?page=${page}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log("Données reçues:", data);
-                setPokemons(data.results);
+                setPokemons(data.data); 
+                setTotalPages(data.totalPages); 
                 setLoading(false);
             })
             .catch((error) => {
                 console.error("Erreur:", error);
                 setLoading(false);
             });
-    }, []);
+    }, [page]);
 
-    if (loading) {
-        return <p>Chargement...</p>
-    }
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) setPage(newPage);
+    };
+
+    if (loading) return <p style={{ color: 'white', textAlign: 'center' }}>Chargement du Pokedex...</p>;
 
     return (
-        <div  className="poke-list-container">
-            <h2>Liste des Pokémon</h2>
+        <div className="poke-list-container">
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <Link to="/create">
+                    <button className="retro-btn" style={{ backgroundColor: '#44aa44', borderColor: '#2e7d32', fontSize: '1.2em' }}>
+                        + Ajouter un Pokémon
+                    </button>
+                </Link>
+            </div>
+
+            <div className="top-nav">
+                <button 
+                    onClick={() => handlePageChange(page - 1)} 
+                    disabled={page === 1}
+                    className="retro-btn"
+                >
+                    ◀ Précédent
+                </button>
+                
+                <h2 className="retro-title">PAGE {page} / {totalPages}</h2>
+
+                <button 
+                    onClick={() => handlePageChange(page + 1)} 
+                    disabled={page === totalPages}
+                    className="retro-btn"
+                >
+                    Suivant ▶
+                </button>
+            </div>
+            
             <ul className="poke-list">
-                {pokemons.map((pokemon, index) => (
-                    <PokeCard key={index} pokemon={pokemon} />
+                {pokemons.map((pokemon) => (
+                    <PokeCard key={pokemon.id} pokemon={pokemon} />
                 ))}
             </ul>
+
+            <div className="pagination-bottom">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`page-number ${page === pageNum ? 'active' : ''}`}
+                    >
+                        {pageNum}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 };

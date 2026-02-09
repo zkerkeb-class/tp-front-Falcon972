@@ -1,10 +1,8 @@
 
-const Title = ({label = 'Met un titre'}) => {
-    console.log(label); 
-
+const Title = ({ label = 'Titre' }) => {
     return (
-    <h1>{label}</h1>
-)
+        <h1>{label}</h1>
+    )
 }
 
 export default Title

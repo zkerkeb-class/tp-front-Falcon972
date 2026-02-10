@@ -85,3 +85,36 @@
 .page-number:hover:not(.active) {
     background: #555;
 }
+
+/* --- Bouton d'ajout équipe --- */
+.card-wrapper {
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.card-wrapper:hover {
+    z-index: 10;
+    transform: translateY(-5px);
+}
+
+.team-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid white;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.team-btn.add { background-color: #44aa44; }
+.team-btn.remove { background-color: #ff4444; }

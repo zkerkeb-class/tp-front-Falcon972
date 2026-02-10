@@ -3,11 +3,19 @@ import { Link, useNavigate } from 'react-router';
 import './PokemonCreate.css'; 
 import '../components/pokelist/index.css'; 
 
+// Liste des types Pokémon
+const POKEMON_TYPES = [
+    "Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", 
+    "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Steel", "Fairy"
+];
+
 const PokemonCreate = () => { 
     const navigate = useNavigate();
     
+    // On sépare type1 et type2 dans le state pour les gérer via les <select>
     const [form, setForm] = useState({
-        name: '', type: '', hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50
+        name: '', type1: 'Normal', type2: '', 
+        hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50
     });
     
     const [imageFile, setImageFile] = useState(null);
@@ -28,7 +36,11 @@ const PokemonCreate = () => {
         try {
             const formData = new FormData();
             formData.append('name.french', form.name);
-            formData.append('type', form.type);
+            
+            // On combine les deux types pour l'envoi au backend
+            const finalType = form.type2 ? `${form.type1},${form.type2}` : form.type1;
+            formData.append('type', finalType);
+
             formData.append('base.HP', form.hp);
             formData.append('base.Attack', form.attack);
             formData.append('base.Defense', form.defense);
@@ -63,7 +75,17 @@ const PokemonCreate = () => {
                 <div className="card-header">
                     <div className="header-left">
                         <input required type="text" name="name" value={form.name} onChange={handleChange} className="input-name" placeholder="NOM DU POKÉMON" />
-                        <input required type="text" name="type" value={form.type} onChange={handleChange} className="input-type" placeholder="TYPES (ex: Fire, Flying)" />
+                        
+                        {/* Sélection du Type 1 */}
+                        <select name="type1" value={form.type1} onChange={handleChange} className="input-type" style={{ marginBottom: '5px' }}>
+                            {POKEMON_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                        
+                        {/* Sélection du Type 2 (Optionnel) */}
+                        <select name="type2" value={form.type2} onChange={handleChange} className="input-type">
+                            <option value="">(Aucun type secondaire)</option>
+                            {POKEMON_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                        </select>
                     </div>
                     <div style={{ fontSize: '1em', fontWeight: 'bold', color: '#44aa44', border: '2px solid #44aa44', padding: '2px 5px', borderRadius: '5px', transform: 'rotate(-10deg)' }}>
                         NEW

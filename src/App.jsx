@@ -4,7 +4,7 @@ import Pokelist from './components/pokelist'
 function App() {
   return (
     <div>
-      <h1 className='retro-title' style={{ textAlign: 'center', marginTop: '20px' }}>POKEDEX 90'</h1>
+      <h1 className='retro-title' style={{ textAlign: 'center', marginTop: '20px' }}>POKEDEX</h1>
       <Pokelist />
     </div>
   )

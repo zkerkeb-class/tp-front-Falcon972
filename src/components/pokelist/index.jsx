@@ -63,7 +63,7 @@ const PokeList = () => {
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <input
                     type="text"
-                    placeholder="🔍 Rechercher un Pokémon par nom..."
+                    placeholder="🔍 Rechercher un Pokémon..."
                     value={searchQuery}
                     onChange={(e) => handleSearch(e.target.value)}
                     style={{
@@ -81,30 +81,18 @@ const PokeList = () => {
 
             {searchResults === null && (
                 <div className="top-nav">
-                    <button 
-                        onClick={() => handlePageChange(page - 1)} 
-                        disabled={page === 1}
-                        className="retro-btn"
-                    >
-                        ◀ Précédent
-                    </button>
-                    
+                    <button onClick={() => handlePageChange(page - 1)} disabled={page === 1} className="retro-btn">◀ Précédent</button>
                     <h2 className="retro-title">PAGE {page} / {totalPages}</h2>
-
-                    <button 
-                        onClick={() => handlePageChange(page + 1)} 
-                        disabled={page === totalPages}
-                        className="retro-btn"
-                    >
-                        Suivant ▶
-                    </button>
+                    <button onClick={() => handlePageChange(page + 1)} disabled={page === totalPages} className="retro-btn">Suivant ▶</button>
                 </div>
             )}
             
             <ul className="poke-list">
                 {displayPokemons.length > 0 ? (
                     displayPokemons.map((pokemon) => (
-                        <PokeCard key={pokemon.id} pokemon={pokemon} />
+                        <Link key={pokemon.id} to={`/pokemons/${pokemon.id}`} style={{ textDecoration: 'none' }}>
+                            <PokeCard pokemon={pokemon} />
+                        </Link>
                     ))
                 ) : (
                     <p style={{ color: 'white', textAlign: 'center', gridColumn: '1 / -1', padding: '20px' }}>

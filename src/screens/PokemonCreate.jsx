@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router';
 import './PokemonCreate.css'; 
 import '../components/pokelist/index.css'; 
 
-// Liste des types Pokémon
 const POKEMON_TYPES = [
     "Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", 
     "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Steel", "Fairy"
@@ -12,7 +11,6 @@ const POKEMON_TYPES = [
 const PokemonCreate = () => { 
     const navigate = useNavigate();
     
-    // On sépare type1 et type2 dans le state pour les gérer via les <select>
     const [form, setForm] = useState({
         name: '', type1: 'Normal', type2: '', 
         hp: 50, attack: 50, defense: 50, specialAttack: 50, specialDefense: 50, speed: 50
@@ -37,7 +35,6 @@ const PokemonCreate = () => {
             const formData = new FormData();
             formData.append('name.french', form.name);
             
-            // On combine les deux types pour l'envoi au backend
             const finalType = form.type2 ? `${form.type1},${form.type2}` : form.type1;
             formData.append('type', finalType);
 

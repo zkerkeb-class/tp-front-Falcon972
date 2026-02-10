@@ -7,22 +7,63 @@
     animation: fadeIn 0.4s ease-out;
 }
 
+.nav-header {
+    width: 360px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
 .back-nav {
     color: #ccc;
     text-decoration: none;
-    margin-bottom: 10px;
     font-size: 0.9em;
-    align-self: flex-start;
-    margin-left: calc(50% - 180px);
+    cursor: pointer;
+    margin: 0;
+    align-self: auto;
 }
-.back-nav:hover { color: #fff; text-decoration: underline; }
+
+.back-nav:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.btn-team-header {
+    padding: 6px 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+    font-family: inherit;
+    color: white;
+}
+
+.btn-team-header:active {
+    transform: scale(0.95);
+}
+
+.btn-add {
+    background-color: #44aa44;
+    border-color: #2e7d32;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.btn-remove {
+    background-color: #ff4444;
+    border-color: #cc0000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
 
 .jumbo-card {
     width: 360px;
     background-color: #fcd144;
     border: 4px solid #c9a334;
     border-radius: 18px;
-    padding: 15px; /* Padding réduit */
+    padding: 15px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.5);
     color: #333;
     font-family: 'Arial', sans-serif;
@@ -270,8 +311,6 @@
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- Arrière-plan animé --- */
-
 .animated-background-container {
     position: fixed;
     top: 0;
@@ -281,32 +320,27 @@
     overflow: hidden;
     z-index: -1;
     pointer-events: none;
-    /* Un léger flou pour que le texte reste lisible par-dessus */
-    backdrop-filter: blur(2px); 
+*    backdrop-filter: blur(2px); 
 }
 
 .floating-pokemon {
     position: absolute;
-    width: 100px; /* Taille de base */
+    width: 100px;
     height: auto;
-    opacity: 0.6; /* Un peu plus visible */
+    opacity: 0.6;
     
-    /* On positionne le départ hors de l'écran à gauche */
     left: -150px; 
     
     animation-name: floatLeftToRight;
-    animation-timing-function: linear; /* Vitesse constante, plus naturel pour un flux */
-    animation-iteration-count: infinite; /* Ne s'arrête jamais */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 @keyframes floatLeftToRight {
     from {
-        /* Départ à gauche, hors écran */
         transform: translateX(0) translateY(0) rotate(0deg);
     }
     to {
-        /* Arrivée à droite, hors écran (100vw + marge de sécurité) */
         transform: translateX(calc(100vw + 300px)) translateY(20px) rotate(20deg);
     }
 }
-

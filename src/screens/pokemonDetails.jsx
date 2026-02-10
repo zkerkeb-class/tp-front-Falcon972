@@ -3,7 +3,6 @@ import { Link, useParams, useNavigate } from 'react-router';
 import './PokemonDetails.css'; 
 import '../components/pokelist/index.css'; 
 
-// ... (reste des imports et constantes TYPE_COLORS, POKEMON_TYPES, getRandom) ...
 const TYPE_COLORS = {
     Normal: '#A8A77A', Fire: '#EE8130', Water: '#6390F0', Electric: '#F7D02C',
     Grass: '#7AC74C', Ice: '#96D9D6', Fighting: '#C22E28', Poison: '#A33EA1',
@@ -15,7 +14,6 @@ const POKEMON_TYPES = Object.keys(TYPE_COLORS);
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 const PokemonDetails = () => { 
-    // ... (tout le code du composant jusqu'au return) ...
     const { id } = useParams(); 
     const navigate = useNavigate();
     const [pokemon, setPokemon] = useState(null);
@@ -165,15 +163,19 @@ const PokemonDetails = () => {
                 ))}
             </div>
 
-            <Link to="/" className="back-nav">← Retour</Link>
-            {!isEditing && (
+            <div className="nav-header">
+                <Link to="/" className="back-nav">← Retour</Link>
+                
+                {!isEditing && (
                     <button 
                         onClick={handleTeamToggle} 
-                        className={`retro-btn btn-team-main ${isInTeam ? 'btn-team-remove' : 'btn-team-add'}`}
+                        className={`btn-team-header ${isInTeam ? 'btn-remove' : 'btn-add'}`}
                     >
-                        {isInTeam ? 'Retirer de l\'Équipe' : 'Ajouter à l\'Équipe'}
+                        {isInTeam ? 'Retirer' : 'Ajouter à l\'Équipe'}
                     </button>
                 )}
+            </div>
+
             <div className="jumbo-card" style={{ backgroundColor: cardBackgroundColor, transition: 'background-color 0.5s ease' }}>
                 
                 <div className="card-header">

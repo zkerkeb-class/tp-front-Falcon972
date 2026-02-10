@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router';
 import './PokemonDetails.css'; 
 import '../components/pokelist/index.css'; 
 
-// Couleurs associées aux types
+// ... (reste des imports et constantes TYPE_COLORS, POKEMON_TYPES, getRandom) ...
 const TYPE_COLORS = {
     Normal: '#A8A77A', Fire: '#EE8130', Water: '#6390F0', Electric: '#F7D02C',
     Grass: '#7AC74C', Ice: '#96D9D6', Fighting: '#C22E28', Poison: '#A33EA1',
@@ -11,45 +11,31 @@ const TYPE_COLORS = {
     Rock: '#B6A136', Ghost: '#735797', Dragon: '#6F35FC', Steel: '#B7B7CE',
     Fairy: '#D685AD'
 };
-
 const POKEMON_TYPES = Object.keys(TYPE_COLORS);
-
 const getRandom = (min, max) => Math.random() * (max - min) + min;
 
 const PokemonDetails = () => { 
+    // ... (tout le code du composant jusqu'au return) ...
     const { id } = useParams(); 
     const navigate = useNavigate();
-
     const [pokemon, setPokemon] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({});
     const [imageFile, setImageFile] = useState(null);
     const [preview, setPreview] = useState(null);
+    const [isInTeam, setIsInTeam] = useState(false);
 
-    // --- LOGIQUE D'ANIMATION AMÉLIORÉE ---
     const backgroundFloaters = useMemo(() => {
-        // On génère 20 éléments pour assurer un flux continu
         return Array.from({ length: 20 }).map((_, index) => {
-            const duration = getRandom(15, 35); // Durée entre 15 et 35 secondes
-            
+            const duration = getRandom(15, 35);
             return {
                 id: index,
                 style: {
-                    // Position verticale aléatoire sur toute la hauteur (0% à 95%)
                     top: `${getRandom(0, 95)}%`,
-                    
-                    // Vitesse aléatoire
                     animationDuration: `${duration}s`,
-                    
-                    // Délai négatif important : permet aux pokémons d'être déjà un peu partout sur l'écran au chargement
-                    // On prend un délai négatif jusqu'à la durée max pour qu'ils soient bien répartis
                     animationDelay: `-${getRandom(0, 35)}s`,
-                    
-                    // Taille variable
                     transform: `scale(${getRandom(0.6, 1.4)})`,
-                    
-                    // Opacité légèrement variable pour la profondeur
                     opacity: getRandom(0.3, 0.7)
                 }
             };
@@ -57,10 +43,18 @@ const PokemonDetails = () => {
     }, []);
 
     useEffect(() => {
+        setLoading(true);
+        setPokemon(null); 
         fetch(`http://localhost:3000/pokemons/${id}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("Pokemon not found");
+                return res.json();
+            })
             .then(data => {
                 setPokemon(data);
+                const team = JSON.parse(localStorage.getItem('myPokemonTeam') || '[]');
+                const found = team.find(p => p.id == data.id);
+                setIsInTeam(!!found);
                 const types = data.type || [];
                 setEditForm({
                     name: data.name?.french,
@@ -76,10 +70,31 @@ const PokemonDetails = () => {
                 setPreview(data.image);
                 setLoading(false);
             })
-            .catch(err => setLoading(false));
+            .catch(err => {
+                console.error(err);
+                setLoading(false);
+            });
     }, [id]);
 
-    // ... (Le reste des fonctions handleImageChange, handleUpdate, etc. reste identique) ...
+    const handleTeamToggle = () => {
+        const team = JSON.parse(localStorage.getItem('myPokemonTeam') || '[]');
+        if (isInTeam) {
+            const newTeam = team.filter(p => p.id !== pokemon.id);
+            localStorage.setItem('myPokemonTeam', JSON.stringify(newTeam));
+            setIsInTeam(false);
+        } else {
+            if (team.length >= 6) {
+                alert("Votre équipe est complète (6 Pokémon max) !");
+                return;
+            }
+            const pokemonSimple = { id: pokemon.id, name: pokemon.name, image: pokemon.image, type: pokemon.type };
+            team.push(pokemonSimple);
+            localStorage.setItem('myPokemonTeam', JSON.stringify(team));
+            setIsInTeam(true);
+        }
+        window.dispatchEvent(new Event("teamUpdated"));
+    };
+
     const handleImageChange = (e) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
@@ -100,7 +115,6 @@ const PokemonDetails = () => {
         formData.append('base.SpecialDefense', editForm.specialDefense);
         formData.append('base.Speed', editForm.speed);
         if (imageFile) formData.append('image', imageFile);
-
         const res = await fetch(`http://localhost:3000/pokemons/${id}`, { method: 'PUT', body: formData });
         const data = await res.json();
         setPokemon(data);
@@ -112,11 +126,16 @@ const PokemonDetails = () => {
     const handleDelete = async () => {
         if (window.confirm("Vraiment supprimer ?")) {
             await fetch(`http://localhost:3000/pokemons/${id}`, { method: 'DELETE' });
+            const team = JSON.parse(localStorage.getItem('myPokemonTeam') || '[]');
+            const newTeam = team.filter(p => p.id != id);
+            localStorage.setItem('myPokemonTeam', JSON.stringify(newTeam));
+            window.dispatchEvent(new Event("teamUpdated"));
             navigate('/');
         }
     };
 
-    if (loading || !pokemon) return <p style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Chargement...</p>;
+    if (loading) return <p style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Chargement...</p>;
+    if (!pokemon) return <p style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Pokémon introuvable</p>;
 
     const renderStat = (label, key, val) => (
         <div className="stat-row">
@@ -140,32 +159,29 @@ const PokemonDetails = () => {
 
     return (
         <div className="details-page">
-            
-            {/* --- ARRIÈRE-PLAN ANIMÉ --- */}
-            {pokemon && pokemon.image && (
-                <div className="animated-background-container">
-                    {backgroundFloaters.map((floater) => (
-                        <img
-                            key={floater.id}
-                            src={pokemon.image}
-                            alt="" 
-                            className="floating-pokemon"
-                            style={floater.style} 
-                        />
-                    ))}
-                </div>
-            )}
-            {/* --------------------------- */}
+            <div className="animated-background-container">
+                {backgroundFloaters.map((floater) => (
+                    <img key={floater.id} src={pokemon.image} alt="" className="floating-pokemon" style={floater.style} />
+                ))}
+            </div>
 
             <Link to="/" className="back-nav">← Retour</Link>
-            
+            {!isEditing && (
+                    <button 
+                        onClick={handleTeamToggle} 
+                        className={`retro-btn btn-team-main ${isInTeam ? 'btn-team-remove' : 'btn-team-add'}`}
+                    >
+                        {isInTeam ? 'Retirer de l\'Équipe' : 'Ajouter à l\'Équipe'}
+                    </button>
+                )}
             <div className="jumbo-card" style={{ backgroundColor: cardBackgroundColor, transition: 'background-color 0.5s ease' }}>
+                
                 <div className="card-header">
                     <div className="header-left">
                         {isEditing ? (
                             <>
                                 <input type="text" name="name" value={editForm.name} onChange={handleChange} className="input-name" placeholder="Nom" />
-                                <div style={{ display: 'flex', gap: '5px', marginTop: '5px' }}>
+                                <div className="input-select-container">
                                     <select name="type1" value={editForm.type1} onChange={handleChange} className="input-type">
                                         {POKEMON_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
@@ -182,17 +198,18 @@ const PokemonDetails = () => {
                             </>
                         )}
                     </div>
-                    <div className="card-id">#{pokemon.id}</div>
+                                        
+                    <div className="card-id" style={{marginLeft: '10px'}}>#{pokemon.id}</div>
                 </div>
 
                 <div 
                     className="card-image-box" 
-                    style={{ cursor: isEditing ? 'pointer' : 'default', position: 'relative' }}
+                    style={{ cursor: isEditing ? 'pointer' : 'default' }}
                     onClick={() => isEditing && document.getElementById('editFileInput').click()}
                 >
                     <img src={preview || "https://via.placeholder.com/150"} alt="Pokemon" className="card-img" />
                     {isEditing && (
-                        <div style={{ position: 'absolute', bottom: 0, width: '100%', background: 'rgba(0,0,0,0.6)', color: 'white', textAlign: 'center', fontSize: '0.8em', padding: '5px', zIndex: 10 }}>
+                        <div className="overlay-edit-text">
                             Clique pour changer 📷
                         </div>
                     )}

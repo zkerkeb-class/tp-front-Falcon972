@@ -212,7 +212,6 @@ const PokemonDetails = () => {
                     <img src={preview || "https://via.placeholder.com/150"} alt="Pokemon" className="card-img" />
                     {isEditing && (
                         <div className="overlay-edit-text">
-                            Clique pour changer 📷
                         </div>
                     )}
                     <input id="editFileInput" type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} disabled={!isEditing} />

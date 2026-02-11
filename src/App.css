@@ -4,3 +4,96 @@
   padding: 2rem;
   text-align: center;
 }
+
+.retro-title {
+  font-family: 'Press Start 2P', cursive;
+  color: #ffcc00;
+  text-shadow: 4px 4px #2a75bb;
+  margin-bottom: 30px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.team-dashboard {
+  max-width: 800px;
+  margin: 0 auto 30px auto;
+  padding: 15px;
+  background-color: #333;
+  border-radius: 10px;
+  border: 2px solid #ffcc00;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.team-title {
+  color: #ffcc00;
+  text-align: center;
+  margin: 0 0 15px 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+}
+
+.team-grid {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.team-empty-message {
+  color: #ccc;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.team-member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+}
+
+.team-member-img-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #555;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.team-member-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.team-member-name {
+  color: white;
+  font-size: 0.7rem;
+  margin-top: 5px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.team-slot-empty {
+  width: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.team-slot-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #222;
+  border: 2px dashed #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  font-family: 'Press Start 2P', cursive;
+}

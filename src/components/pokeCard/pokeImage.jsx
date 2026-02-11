@@ -1,8 +1,6 @@
-
-
 const PokeImage = ({ imageUrl }) => {
     return (    
-            <img src={imageUrl} alt="Pokémon" className="poke-image" />
+        <img src={imageUrl} alt="Pokémon" className="poke-image" />
     );
 };
 

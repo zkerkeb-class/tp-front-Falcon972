@@ -9,9 +9,7 @@ const usePokemon = (pokemonUrl) => {
         const fetchPokemon = async () => {
             try {
                 const response = await fetch(pokemonUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!response.ok) throw new Error('Erreur réseau');
                 const data = await response.json();
                 setPokemonData(data);
             } catch (err) {

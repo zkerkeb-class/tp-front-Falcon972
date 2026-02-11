@@ -1,44 +1,43 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import usePokemon from "../../hook/usePokemon";
-
 import './index.css';
-import PokeTitle from "./pokeTitle";
 import PokeImage from "./pokeImage";
 
 const PokeCard = ({ pokemon }) => {
-    const {pokemonData, loading} = usePokemon(pokemon.url);
-    console.log('pokeData',pokemonData)
-
-
-    if (loading) {
-        return <p>Chargement du Pokémon...</p>;
-    }
-
+    const imageUrl = pokemon.image || "https://via.placeholder.com/150";
+    const type = pokemon.type?.[0] || 'Normal';
 
     return (
-        <Link to={`/pokemonDetails/${encodeURIComponent(pokemon.url)}`}>
-        <div className="poke-card">
-            <div className={`poke-card-header poke-type-${pokemonData.types?.[0]?.type?.name}`}>
-                <PokeTitle name={pokemon.name} />
-            </div>
-            <div className="poke-image-background">
-                <PokeImage imageUrl={pokemonData.sprites?.other?.['official-artwork']?.front_default} />
-            </div>
-            <div>
+        <Link to={`/pokemonDetails/${pokemon.id}`} className="card-link">
+            <div className="retro-card-border">
+                <div className={`retro-card-inner type-bg-${type.toLowerCase()}`}>
+                    <div className="retro-header">
+                        <span className="retro-name">{pokemon.name?.french}</span>
+                        <span className="retro-hp">
+                            <small>PV</small>{pokemon.base?.HP}
+                        </span>
+                    </div>
+                    
+                    <div className="retro-image-frame">
+                        <PokeImage imageUrl={imageUrl} />
+                    </div>
 
-                {pokemonData.stats?.map((stat) => {
-                    return(
-                        <div className="poke-stat-row" key={stat.stat.name}>
-                            <span className={`poke-type-font poke-type-${stat.stat.name}`}>{stat.stat.name}</span>
+                    <div className="retro-flavor-bar">
+                        Pokémon #{pokemon.id}
+                    </div>
 
-                            <span className="poke-type-font poke-stat-value">{stat.base_stat}</span>
+                    <div className="retro-stats-box">
+                        <div className="stat-line">
+                            <strong>ATK:</strong> {pokemon.base?.Attack}
                         </div>
-                    ) 
-                })}    
-
+                        <div className="stat-line">
+                            <strong>DEF:</strong> {pokemon.base?.Defense}
+                        </div>
+                        <div className="stat-line">
+                            <strong>VIT:</strong> {pokemon.base?.Speed}
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         </Link>
     );
 }
